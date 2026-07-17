@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glues, Adhesives & Cements — AHH Staff Training</title>
+<style>
+  :root {
+    --blue:      #404fc2;
+    --blue-lt:   #6278d6;
+    --blue-dim:  #e8eaf6;
+    --red:       #fe0202;
+    --white:     #ffffff;
+    --gray-100:  #f4f4f6;
+    --gray-200:  #e8e8ec;
+    --gray-400:  #a0a0b0;
+    --gray-700:  #444455;
+    --gray-900:  #1a1a2e;
+    --green-bg:  #e6f4ee;
+    --green-txt: #0d6e4f;
+    --green-bdr: #1d9e75;
+    --radius: 6px;
+    --shadow: 0 2px 12px rgba(64,79,194,.09);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; background: var(--gray-100); color: var(--gray-700); min-height: 100vh; }
+
+  /* TOP BAR */
+  .topbar {
+    background: var(--blue); color: var(--white);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem; height: 52px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  }
+  .topbar-logo { font-weight: bold; font-size: 1rem; color: var(--white); }
+  .topbar-title { font-size: .82rem; color: rgba(255,255,255,.7); }
+  .topbar-right { display: flex; align-items: center; gap: .6rem; font-size: .78rem; color: rgba(255,255,255,.7); }
+  .prog-track { width: 90px; height: 5px; background: rgba(255,255,255,.2); border-radius: 10px; overflow: hidden; }
+  .prog-fill { height: 100%; background: var(--green-bdr); border-radius: 10px; transition: width .4s; }
+
+  /* LAYOUT */
+  .app { display: flex; min-height: calc(100vh - 52px); }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 210px; flex-shrink: 0;
+    background: var(--white); border-right: 1px solid var(--gray-200);
+    padding: 1.25rem 0;
+    position: sticky; top: 52px; height: calc(100vh - 52px); overflow-y: auto;
+  }
+  .sidebar-lbl {
+    font-size: .67rem; font-weight: bold; text-transform: uppercase;
+    letter-spacing: .09em; color: var(--gray-400);
+    padding: .5rem .8rem .25rem;
+  }
+  .nav-btn {
+    display: flex; align-items: center; gap: .5rem;
+    width: 100%; padding: .45rem .8rem;
+    border: none; background: none; text-align: left;
+    font-size: .81rem; color: var(--gray-700);
+    cursor: pointer; border-radius: var(--radius);
+    transition: background .13s, color .13s;
+  }
+  .nav-btn:hover { background: var(--blue-dim); color: var(--blue); }
+  .nav-btn.active { background: var(--blue); color: var(--white); font-weight: bold; }
+  .nav-btn.done { color: var(--green-txt); }
+  .nav-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gray-400); flex-shrink: 0; }
+  .nav-btn.active .nav-dot { background: rgba(255,255,255,.5); }
+  .nav-btn.done .nav-dot { background: var(--green-bdr); }
+  .nav-check { display: none; font-size: .72rem; margin-left: auto; }
+  .nav-btn.done .nav-check { display: inline; }
+
+  /* MAIN */
+  .main { flex: 1; padding: 1.75rem 2.25rem; max-width: 880px; }
+
+  /* SCREEN */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* SECTION HEADER */
+  .s-eyebrow { font-size: .72rem; font-weight: bold; text-transform: uppercase; letter-spacing: .1em; color: var(--blue); margin-bottom: .3rem; }
+  .s-title { font-size: 1.75rem; font-weight: bold; color: var(--gray-900); line-height: 1.2; margin-bottom: .3rem; }
+  .s-sub { font-size: .87rem; color: var(--gray-400); padding-bottom: 1.1rem; margin-bottom: 1.4rem; border-bottom: 2px solid var(--blue-dim); }
+
+  /* BLOCKS */
+  .block {
+    background: var(--white); border: 1px solid var(--gray-200);
+    border-radius: var(--radius); padding: 1.1rem 1.25rem;
+    margin-bottom: 1rem; box-shadow: var(--shadow);
+  }
+  .block h3 { font-size: .87rem; font-weight: bold; color: var(--blue); margin-bottom: .45rem; }
+  .block p, .block li { font-size: .83rem; line-height: 1.65; color: var(--gray-700); }
+  .block ul { padding-left: 1.1rem; margin-top: .3rem; }
+  .block li { margin-bottom: .2rem; }
+
+  /* TWO-COL */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  @media (max-width: 620px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* CARD GRID (expandable) */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: .85rem; margin-bottom: 1rem; }
+  .card { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  .card-hdr {
+    background: var(--blue-dim); padding: .65rem 1rem;
+    border-bottom: 2px solid var(--blue);
+    cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+    user-select: none;
+  }
+  .card-hdr h3 { font-size: .84rem; font-weight: bold; color: var(--blue); }
+  .card-chev { font-size: .68rem; color: var(--blue); transition: transform .2s; }
+  .card.open .card-chev { transform: rotate(180deg); }
+  .card-body { padding: .85rem 1rem; font-size: .82rem; line-height: 1.65; color: var(--gray-700); display: none; }
+  .card-body ul { padding-left: 1rem; margin-top: .3rem; }
+  .card-body li { margin-bottom: .2rem; }
+  .card.open .card-body { display: block; }
+
+  /* VISCOSITY GRID */
+  .visc-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: .65rem; margin-bottom: 1rem; }
+  @media (max-width: 620px) { .visc-grid { grid-template-columns: repeat(2,1fr); } }
+  .visc-cell {
+    background: var(--white); border: 1px solid var(--gray-200);
+    border-radius: var(--radius); padding: .7rem .85rem;
+    box-shadow: var(--shadow); cursor: pointer;
+    transition: border-color .13s;
+  }
+  .visc-cell:hover { border-color: var(--blue); }
+  .visc-cell.open { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(64,79,194,.13); }
+  .visc-name { font-size: .82rem; font-weight: bold; color: var(--blue); margin-bottom: .2rem; }
+  .visc-cure { font-size: .7rem; color: var(--gray-400); margin-bottom: .3rem; }
+  .visc-detail { font-size: .79rem; line-height: 1.55; color: var(--gray-700); display: none; }
+  .visc-cell.open .visc-detail { display: block; }
+
+  /* TIP */
+  .tip {
+    background: var(--green-bg); border-left: 4px solid var(--green-bdr);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: .85rem 1rem; margin-bottom: 1rem;
+    font-size: .83rem; line-height: 1.65; color: var(--green-txt);
+  }
+
+  /* BRAND TABLE */
+  .brand-wrap { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1rem; box-shadow: var(--shadow); }
+  .brand-wrap > h3 { font-size: .84rem; font-weight: bold; color: var(--blue); margin-bottom: .75rem; }
+  .brand-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+  @media (max-width: 620px) { .brand-grid { grid-template-columns: 1fr; } }
+  .brand-col h4 { font-size: .77rem; font-weight: bold; color: var(--blue); margin-bottom: .35rem; margin-top: .6rem; }
+  .brand-col h4:first-child { margin-top: 0; }
+  .brand-col ul { list-style: none; }
+  .brand-col li { font-size: .78rem; color: var(--gray-700); padding: .2rem 0; border-bottom: 1px solid var(--gray-200); line-height: 1.4; }
+  .brand-col li:last-child { border-bottom: none; }
+
+  /* QUIZ */
+  .quiz-wrap { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); margin-top: 1.4rem; }
+  .quiz-hdr { background: var(--red); padding: .6rem 1rem; }
+  .quiz-hdr h3 { font-size: .84rem; font-weight: bold; color: var(--white); text-transform: uppercase; letter-spacing: .05em; }
+  .quiz-body { padding: 1rem 1.1rem; }
+  .quiz-q { font-size: .87rem; font-weight: bold; color: var(--gray-900); margin-bottom: .85rem; line-height: 1.5; }
+  .quiz-opts { display: flex; flex-direction: column; gap: .4rem; }
+  .quiz-opt {
+    display: flex; align-items: center; gap: .65rem;
+    padding: .6rem .85rem; border: 1px solid var(--gray-200);
+    border-radius: var(--radius); cursor: pointer;
+    font-size: .82rem; color: var(--gray-700);
+    background: var(--gray-100); text-align: left; width: 100%;
+    transition: border-color .13s, background .13s;
+  }
+  .quiz-opt:hover:not(:disabled) { border-color: var(--blue); background: var(--blue-dim); }
+  .quiz-opt:disabled { cursor: default; }
+  .quiz-opt.correct { background: var(--green-bg); border-color: var(--green-bdr); color: var(--green-txt); font-weight: bold; }
+  .quiz-opt.wrong { background: #fdecea; border-color: #e57373; color: #b71c1c; }
+  .q-letter { width: 21px; height: 21px; border-radius: 50%; background: var(--gray-200); display: flex; align-items: center; justify-content: center; font-size: .68rem; font-weight: bold; flex-shrink: 0; }
+  .quiz-opt.correct .q-letter { background: var(--green-bdr); color: var(--white); }
+  .quiz-opt.wrong .q-letter { background: #e57373; color: var(--white); }
+  .quiz-fb { margin-top: .85rem; padding: .7rem .9rem; border-radius: var(--radius); font-size: .81rem; line-height: 1.6; display: none; }
+  .quiz-fb.show { display: block; }
+  .quiz-fb.correct { background: var(--green-bg); color: var(--green-txt); }
+  .quiz-fb.wrong { background: #fdecea; color: #b71c1c; }
+
+  /* CLOSING */
+  .closing {
+    background: var(--blue); border-radius: var(--radius);
+    padding: 2.5rem 2rem; margin-bottom: 1rem;
+    text-align: center; box-shadow: var(--shadow);
+  }
+  .closing h2 { font-size: 1.6rem; font-weight: bold; color: var(--white); line-height: 1.3; margin-bottom: .75rem; }
+  .closing blockquote { font-size: 1rem; color: rgba(255,255,255,.8); font-style: italic; margin-bottom: .75rem; }
+  .closing address { font-size: .83rem; color: rgba(255,255,255,.6); font-style: normal; }
+
+  /* COMPLETE */
+  .complete-wrap { text-align: center; padding: 2.5rem 1rem; }
+  .complete-badge { width: 64px; height: 64px; background: var(--green-bg); border: 3px solid var(--green-bdr); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 1rem; }
+  .complete-wrap h2 { font-size: 1.5rem; font-weight: bold; color: var(--gray-900); margin-bottom: .4rem; }
+  .complete-wrap p { font-size: .87rem; color: var(--gray-400); margin-bottom: 1.5rem; }
+  .score-row { display: flex; justify-content: center; gap: 1rem; margin-bottom: 1.5rem; }
+  .score-box { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius); padding: .85rem 1.25rem; box-shadow: var(--shadow); min-width: 80px; }
+  .score-n { font-size: 1.5rem; font-weight: bold; color: var(--blue); }
+  .score-l { font-size: .72rem; color: var(--gray-400); }
+
+  /* FOOTER NAV */
+  .nav-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 1.75rem; padding-top: 1.1rem; border-top: 1px solid var(--gray-200); }
+  .btn { padding: .5rem 1.3rem; border: 1px solid var(--gray-200); border-radius: var(--radius); font-size: .83rem; font-weight: bold; cursor: pointer; background: var(--white); color: var(--gray-700); transition: background .13s; }
+  .btn:hover { background: var(--gray-100); }
+  .btn:disabled { opacity: .35; cursor: default; }
+  .btn-primary { background: var(--blue); color: var(--white); border-color: var(--blue); }
+  .btn-primary:hover { background: var(--blue-lt); border-color: var(--blue-lt); }
+
+  @media (max-width: 700px) { .sidebar { display: none; } .main { padding: 1.1rem; } }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="topbar-logo">Anchorage House of Hobbies</span>
+  <span class="topbar-title">Glues, Adhesives &amp; Cements</span>
+  <div class="topbar-right">
+    <span id="prog-lbl">Section 1 of 6</span>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:16.6%"></div></div>
+  </div>
+</header>
+
+<div class="app">
+<nav class="sidebar">
+  <div class="sidebar-lbl">Sections</div>
+  <div id="nav-items"></div>
+</nav>
+
+<main class="main">
+
+<!-- ── SCREEN 0: Glue vs Adhesive vs Cement ── -->
+<div class="screen active" id="screen-0">
+  <div class="s-eyebrow">Section 1</div>
+  <h1 class="s-title">Glue, Adhesive, or Cement?</h1>
+  <p class="s-sub">Understanding what the words actually mean</p>
+
+  <div class="two-col">
+    <div class="block">
+      <h3>Glue</h3>
+      <p>The oldest and loosest term. Technically refers to adhesives made from organic materials like animal hides or fish. In modern usage it has become a catch-all word for anything that sticks things together. When a customer says "model glue," that tells you nothing about what they actually need.</p>
+    </div>
+    <div class="block">
+      <h3>Adhesive</h3>
+      <p>The correct technical umbrella term for any substance that bonds two surfaces together by chemical or mechanical means. CA, epoxy, E6000, and PVA are all adhesives. This is the most accurate word for the category as a whole.</p>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="block">
+      <h3>Cement (solvent)</h3>
+      <p>In the hobby world, cement refers specifically to a solvent-based product that works by dissolving the surfaces and fusing them together. There is no glue layer added. The joint becomes one unified material, not two pieces stuck together. Plastic cement is the classic example.</p>
+    </div>
+    <div class="block">
+      <h3>Why It Matters</h3>
+      <p>Recommending cement to a customer working with resin or foam is a mistake. Recommending CA to a styrene modeler when solvent cement would give a cleaner seam is a missed opportunity.</p>
+      <p style="margin-top:.5rem;font-weight:bold;color:var(--blue)">The follow-up question is always: What material are you bonding?</p>
+    </div>
+  </div>
+
+  <div class="quiz-wrap" data-quiz="0">
+    <div class="quiz-hdr"><h3>Knowledge Check</h3></div>
+    <div class="quiz-body">
+      <p class="quiz-q">A customer walks in and asks for model glue to fix their plastic model airplane. Before recommending anything, what is the single most important follow-up question?</p>
+      <div class="quiz-opts">
+        <button class="quiz-opt" data-idx="0"><span class="q-letter">A</span>What brand do you normally use?</button>
+        <button class="quiz-opt" data-idx="1"><span class="q-letter">B</span>What material is your model made of — plastic, resin, or foam?</button>
+        <button class="quiz-opt" data-idx="2"><span class="q-letter">C</span>How long can you wait for it to cure?</button>
+        <button class="quiz-opt" data-idx="3"><span class="q-letter">D</span>Is this a structural repair or cosmetic?</button>
+      </div>
+      <div class="quiz-fb" data-correct="1">The material determines everything. Styrene uses solvent cement. Resin, foam, and rubber need an adhesive like CA. Recommending the wrong product is the most common floor mistake.</div>
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <button class="btn" disabled>← Back</button>
+    <button class="btn btn-primary" onclick="goSection(1)">Next: CA →</button>
+  </div>
+</div>
+
+<!-- ── SCREEN 1: CA ── -->
+<div class="screen" id="screen-1">
+  <div class="s-eyebrow">Section 2</div>
+  <h1 class="s-title">Cyanoacrylate (CA)</h1>
+  <p class="s-sub">{Cy-ano-ack-relate} &mdash; The most versatile adhesive in the hobby world</p>
+
+  <div class="block">
+    <h3>What It Is and How It Works</h3>
+    <p><strong>What it is</strong><br>A fast-curing acrylic resin adhesive. In hobby shops it typically comes in three viscosities: thin (water-like), medium, and thick (gel)</p>
+    <p style="margin-top:.5rem"><strong>How it works</strong><br>CA cures through anionic polymerization triggered by trace moisture in the air or on the surface — it's not evaporation-based like wood glue. This is why it bonds so fast (seconds) and why it doesn't work well in very dry environments without an accelerator (kicker) spray.</p>
+    <p style="margin-top:.5rem"><strong>Key rules</strong></p>
+    <ul>
+      <li>Less is more. A thin, even application beats a big glob every time. Excess CA causes white fogging, weakens joints, and makes a mess.</li>
+      <li>CA bonds to skin near instantly, so be extra careful.</li>
+      <li>Regular CA will "eat" foam.</li>
+    </ul>
+  </div>
+
+  <p style="font-size:.72rem;font-weight:bold;text-transform:uppercase;letter-spacing:.08em;color:var(--gray-400);margin-bottom:.5rem;">Viscosity Options — tap to expand</p>
+  <div class="visc-grid">
+    <div class="visc-cell" onclick="toggleVisc(this)">
+      <div class="visc-name">Thin CA</div>
+      <div class="visc-cure">Cure: 5-15 seconds</div>
+      <div class="visc-detail">Water-like. Wicks into tight joints by capillary action. Place parts first, then apply.</div>
+    </div>
+    <div class="visc-cell" onclick="toggleVisc(this)">
+      <div class="visc-name">Medium CA</div>
+      <div class="visc-cure">Cure: 15-30 sec</div>
+      <div class="visc-detail">Light syrup. More working time. Fills minor gaps. Good general-purpose choice.</div>
+    </div>
+    <div class="visc-cell" onclick="toggleVisc(this)">
+      <div class="visc-name">Thick CA</div>
+      <div class="visc-cure">Cure: 30-60 sec</div>
+      <div class="visc-detail">Honey-like. Stays where placed. Significant gap fill. Good for rough or porous surfaces.</div>
+    </div>
+    <div class="visc-cell" onclick="toggleVisc(this)">
+      <div class="visc-name">Gel CA</div>
+      <div class="visc-cure">Cure: 30-90 sec</div>
+      <div class="visc-detail">Non-drip, no-run. Maximum gap fill. For vertical surfaces and foam.</div>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)"><h3>Odorless CA</h3><span class="card-chev">▾</span></div>
+      <div class="card-body">Same bond strength but produces less fume. Ideal for customers sensitive to fumes or working indoors in small spaces.<br><br>As a bonus, Odorless CA is safe to use on foam models.</div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)"><h3>Flexible CA</h3><span class="card-chev">▾</span></div>
+      <div class="card-body">Cures with flex rather than brittle hardness. For rubber, vinyl, and joints that absorb vibration.</div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)"><h3>RC Tire Glue</h3><span class="card-chev">▾</span></div>
+      <div class="card-body">Thin CA formulated specifically for bonding to the hard nylon of RC car wheels.</div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)"><h3>Accelerator (Insta-Set)</h3><span class="card-chev">▾</span></div>
+      <div class="card-body">Spray or brush-on chemical that cures CA instantly. Use sparingly — too much causes white blush on clear parts and can weaken the joint.</div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)"><h3>Debonder (Un-Cure)</h3><span class="card-chev">▾</span></div>
+      <div class="card-body">Dissolves cured CA. Fixes mistakes, separates bonded parts, and removes CA from skin.</div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)"><h3>Storing CA</h3><span class="card-chev">▾</span></div>
+      <div class="card-body">
+        <p>Exposure to heat and moisture are the two main factors in decreasing the shelf life of CA. If kept at normal room temperature (74°F) and humidity levels, BSI's regular CAs will have a shelf life of over two years. Unopened bottles can be stored in a freezer, but this offers little or no advantage over storage in a refrigerator. CA bottles can be stored in a sealed container inside the refrigerator to isolate them from moisture. Adding a desiccant (silica gel) to the container can extend the life of the CA to over four years. Opened bottles that are frequently used should not be put into the fridge since condensation can occur inside the bottle. Accelerator should never be stored with CA.</p>
+        <p style="margin-top:.6rem">The first important step is to make a clean cut with a razor blade or hobby knife when you first cut off the tip of the nozzle. When you are done using the bottle, sit it down hard and then squeeze the bottle. Wipe the nozzle clean of any excess CA, then squeeze the bottle again to verify you can hear air blowing through it. If you look straight down at the tip (not while squeezing it!) you should see a black dot. That means the nozzle is clear and you can put the colored cap back on. If a buildup of CA occurs at the tip, many times you can clear it just by using your fingernails to remove the cured CA.</p>
+        <p style="margin-top:.4rem;font-style:italic;color:var(--gray-400)">—Bob Smith Industries</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Common Uses and Typical Customers</h3>
+    <p><strong>Common uses</strong></p>
+    <ul>
+      <li>Wood models and projects.</li>
+      <li>Hard surface repairs that don't flex (ceramic, ivory, most plastics, metal).</li>
+      <li>Foam models (Odorless only)</li>
+    </ul>
+    <p style="margin-top:.5rem"><strong>Typical customers</strong></p>
+    <ul>
+      <li>Practically everyone</li>
+      <li>Wood workers and modelers</li>
+      <li>Carvers and craftspeople</li>
+    </ul>
+    <p style="margin-top:.5rem"><strong>Sales note</strong></p>
+    <ul>
+      <li>"Krazy Glue" and "Super Glue" are lower grade versions of BSI CAs.</li>
+      <li>Our glues are far fresher than anything you will ever find in a hardware store.</li>
+      <li>Once a customer tries quality hobby-grade CA, they rarely go back to hardware store brands.</li>
+    </ul>
+  </div>
+
+  <div class="brand-wrap">
+    <h3>CA — Most Common</h3>
+    <div class="brand-grid">
+      <div class="brand-col">
+        <h4>Brands we carry: Bob Smith Industries (BSI)</h4>
+        <ul>
+          <li>Insta-Cure = Thin <span style="display:inline-block;background:#404fc2;color:#fff;font-size:.65rem;font-weight:bold;padding:.05rem .4rem;border-radius:3px;vertical-align:middle">#2</span></li>
+          <li>Insta-Cure+ = Gap Filling <span style="display:inline-block;background:#fe0202;color:#fff;font-size:.65rem;font-weight:bold;padding:.05rem .4rem;border-radius:3px;vertical-align:middle">#1</span></li>
+          <li>Maxi-Cure = Thick</li>
+          <li>IC-Gel = Gel</li>
+          <li>Super Gold = Thin Odorless (Foam Safe)</li>
+          <li>Super Gold+ = Gap Filling Odorless (Foam Safe) <span style="display:inline-block;background:#404fc2;color:#fff;font-size:.65rem;font-weight:bold;padding:.05rem .4rem;border-radius:3px;vertical-align:middle">#3</span></li>
+          <li>IC-2000 = Rubber Infused (Black)</li>
+          <li>Insta-Flex = Thin Flexible (Clear)</li>
+          <li>Insta-Flex+ = Gap Filling (Clear)</li>
+          <li>Ultra-Cure = Tire Glue</li>
+          <li>Un-Cure = Debonder</li>
+        </ul>
+      </div>
+      <div class="brand-col">
+        <h4>Brands we carry: Pacer (Zap)</h4>
+        <ul>
+          <li>Zap = Thin</li>
+          <li>Zap-A-Gap = Gap Filling</li>
+          <li>Slo-Zap = Thick</li>
+          <li>Zap-Gel = Gel</li>
+          <li>Zap-O Xtra = Thin Odorless (Foam Safe)</li>
+          <li>Zap-O = Gap Filling Odorless (Foam Safe)</li>
+          <li>Poly-Zap = Hard Plastics (Lexan/ABS)</li>
+        </ul>
+        <h4>Also carry</h4>
+        <ul>
+          <li>Deluxe Materials</li>
+          <li>AK Interactive</li>
+        </ul>
+        <h4>Specialty brands</h4>
+        <ul>
+          <li>Pro-Line Racing = Tire Glue</li>
+          <li>AKA Racing = Tire Glue</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-wrap" data-quiz="1">
+    <div class="quiz-hdr"><h3>Knowledge Check</h3></div>
+    <div class="quiz-body">
+      <p class="quiz-q">A customer is building a foam RC airplane and needs to glue foam panels together. Which CA product is the right recommendation?</p>
+      <div class="quiz-opts">
+        <button class="quiz-opt" data-idx="0"><span class="q-letter">A</span>Insta-Cure (thin CA) — it wicks right into the joint</button>
+        <button class="quiz-opt" data-idx="1"><span class="q-letter">B</span>IC-2000 (rubber-toughened CA) — strongest bond available</button>
+        <button class="quiz-opt" data-idx="2"><span class="q-letter">C</span>Super Gold or Super Gold+ (odorless, foam-safe CA)</button>
+        <button class="quiz-opt" data-idx="3"><span class="q-letter">D</span>Maxi-Cure (thick CA) — fills the gap well</button>
+      </div>
+      <div class="quiz-fb" data-correct="2">Standard CA melts foam on contact. Odorless CA — Super Gold or Super Gold+ — is foam-safe. This is a must-know distinction. Sending someone home with regular CA for a foam build will ruin their project.</div>
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <button class="btn" onclick="goSection(0)">← Back</button>
+    <button class="btn btn-primary" onclick="goSection(2)">Next: Epoxy →</button>
+  </div>
+</div>
+
+<!-- ── SCREEN 2: Epoxy ── -->
+<div class="screen" id="screen-2">
+  <div class="s-eyebrow">Section 3</div>
+  <h1 class="s-title">Epoxy</h1>
+  <p class="s-sub">The strongest structural adhesive in the hobby world</p>
+
+  <div class="block">
+    <h3>What It Is and How It Works</h3>
+    <p><strong>What it is</strong><br>A two-part adhesive system — a resin and a hardener sold together. Delivers the strongest, most gap-filling bond of any adhesive in the hobby world.</p>
+    <p style="margin-top:.5rem"><strong>How it works</strong><br>Mixing the two parts triggers a chemical curing reaction that creates a cross-linked polymer. The result is extremely hard, waterproof, and resistant to heat and vibration. The bond becomes part of the structure.</p>
+    <p style="margin-top:.5rem"><strong>How to use</strong><br>Combine equal parts by volume, mixed thoroughly (undermixing is the #1 failure cause), applied within the working time before it starts to gel. Slower-cure epoxies generally give stronger structural bonds; faster ones are for tacking things in place, but are still stronger than CA.</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)"><h3>5-Minute (Quick-Cure)</h3><span class="card-chev">▾</span></div>
+      <div class="card-body">Fastest cure, lowest final strength. Working time about 2 minutes, handling strength in 5 minutes, full cure in 24 hours. Best for quick repairs and non-structural bonds.</div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)"><h3>15-Minute (Mid-Cure)</h3><span class="card-chev">▾</span></div>
+      <div class="card-body">Best balance of working time and strength. Allows repositioning. Best for structural repairs, motor mounts, and firewall reinforcement.</div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)"><h3>30-Minute (Slow-Cure)</h3><span class="card-chev">▾</span></div>
+      <div class="card-body">Longest working time, highest final strength. Best for composite layups, wing tube sockets, and any structural RC aircraft joint under real stress. Slower cure always equals stronger bond.</div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)"><h3>Finishing / Laminating Epoxy</h3><span class="card-chev">▾</span></div>
+      <div class="card-body">A thin, low-viscosity epoxy used with fiberglass cloth to create a structural laminate skin on foam RC aircraft. Adds rigidity and crash resistance without significant weight. Regular epoxy is too thick for this application. Often referred to as "Glassing"</div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)"><h3>Mixing Accessories</h3><span class="card-chev">▾</span></div>
+      <div class="card-body">Sell mixing sticks and disposable mixing cups alongside epoxy. Make the add-on suggestion automatic, a customer buying epoxy without something to mix it with is going to have a bad experience.</div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)"><h3>Alaska Tip</h3><span class="card-chev">▾</span></div>
+      <div class="card-body">Cold surfaces reduce bond strength significantly. Recommend customers warm their parts slightly before applying; especially relevant for Alaskan customers doing outdoor RC work, or in a garage during cold months.</div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Common Uses and Typical Customers</h3>
+    <p><strong>Common uses</strong></p>
+    <ul>
+      <li>Structural repairs, motor mounts, firewalls, and reinforcements.</li>
+      <li>Laminating fiberglass over foam wings.</li>
+      <li>Any joint that must survive vibration, impact, or repeated stress.</li>
+      <li>Safe on most surfaces, but very rigid.</li>
+    </ul>
+    <p style="margin-top:.5rem"><strong>Typical customers</strong></p>
+    <ul>
+      <li>RC aircraft builders.</li>
+      <li>Any hobbyist where CA alone is not strong enough.</li>
+      <li>Wood workers</li>
+    </ul>
+    <p style="margin-top:.5rem"><strong>Sales note</strong><br>When a customer describes a structural repair, ask whether they have epoxy, many default to CA out of habit even when epoxy is the right tool.</p>
+  </div>
+
+  <div class="brand-wrap">
+    <h3>Epoxy — Most Common</h3>
+    <div class="brand-grid">
+      <div class="brand-col">
+        <h4>Brands we carry: Bob Smith Industries (BSI)</h4>
+        <ul>
+          <li>Quick-Cure = 5-Minute <span style="display:inline-block;background:#fe0202;color:#fff;font-size:.65rem;font-weight:bold;padding:.05rem .4rem;border-radius:3px;vertical-align:middle">#1</span></li>
+          <li>Mid-Cure = 15-Minute</li>
+          <li>Slow-Cure = 30-Minute <span style="display:inline-block;background:#404fc2;color:#fff;font-size:.65rem;font-weight:bold;padding:.05rem .4rem;border-radius:3px;vertical-align:middle">#2</span></li>
+          <li>Finish-Cure = 20-Minute (for glassing)</li>
+        </ul>
+        <h4>Also carry</h4>
+        <ul><li>Deluxe Materials</li></ul>
+      </div>
+      <div class="brand-col">
+        <h4>Pacer (Zap)</h4>
+        <ul>
+          <li>Z-Poxy 5-Minute</li>
+          <li>Z-Poxy 15-Minute</li>
+          <li>Z-Poxy 30-Minute</li>
+          <li>Z-Poxy Finishing Resin = 20-Minute (for glassing)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-wrap" data-quiz="2">
+    <div class="quiz-hdr"><h3>Knowledge Check</h3></div>
+    <div class="quiz-body">
+      <p class="quiz-q">A customer needs a structural repair on an RC aircraft motor mount and wants the strongest possible bond. They have time to wait. Which epoxy?</p>
+      <div class="quiz-opts">
+        <button class="quiz-opt" data-idx="0"><span class="q-letter">A</span>Quick-Cure 5-minute — fastest to handle</button>
+        <button class="quiz-opt" data-idx="1"><span class="q-letter">B</span>Mid-Cure 15-minute — good balance of speed and strength</button>
+        <button class="quiz-opt" data-idx="2"><span class="q-letter">C</span>Slow-Cure 30-minute — longest working time, highest final strength</button>
+        <button class="quiz-opt" data-idx="3"><span class="q-letter">D</span>Finish-Cure — thin and wets out surfaces well</button>
+      </div>
+      <div class="quiz-fb" data-correct="2">Slower cure always equals stronger bond. For a structural motor mount, Slow-Cure 30-minute is the right call. Quick-Cure trades strength for speed.</div>
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <button class="btn" onclick="goSection(1)">← Back</button>
+    <button class="btn btn-primary" onclick="goSection(3)">Next: Plastic Cement →</button>
+  </div>
+</div>
+
+<!-- ── SCREEN 3: Plastic Cement ── -->
+<div class="screen" id="screen-3">
+  <div class="s-eyebrow">Section 4</div>
+  <h1 class="s-title">Plastic Cement</h1>
+  <p class="s-sub">A solvent, not a glue — and the distinction matters</p>
+
+  <div class="block">
+    <h3>What It Is and How It Works</h3>
+    <p><strong>What it is</strong><br>Not a glue in the traditional sense. Plastic cement is a solvent that melts the surfaces and fuses them into one. There is no bonding layer added between the pieces.</p>
+    <p style="margin-top:.5rem"><strong>How it works</strong><br>The solvent softens/melts the plastic surface on both parts, they fuse together as the solvent evaporates, and you end up with what's structurally a single piece of plastic rather than two pieces adhered together.</p>
+    <p style="margin-top:.5rem">This only works on polystyrene, it won't bond metal, resin, or most other plastics.</p>
+    <p style="margin-top:.5rem"><strong>How to use it</strong><br>Thin/liquid cement (like Tamiya Extra Thin) is applied with a brush after parts are positioned, capillary action pulls it into the seam. Thick/tube cement is applied to one surface before joining, better for gap-filling but messier.</p>
+    <p style="margin-top:.5rem">Ventilation matters — these are genuine solvents.</p>
+    <p style="margin-top:.5rem"><strong>The most important rule in this section</strong><br>Plastic cement only works on styrene plastic. It will NOT work on resin, polyurethane, ABS, foam, or metal. Always ask what the kit is made of before recommending.</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)"><h3>Extra Thin</h3><span class="card-chev">▾</span></div>
+      <div class="card-body">Ultra-low viscosity. Apply after parts are already pressed together — it wicks into the seam on its own. The go-to for clean, invisible seams on injection-molded kits. Tamiya Extra Thin is the gold standard.</div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)"><h3>Thin / Regular</h3><span class="card-chev">▾</span></div>
+      <div class="card-body">Classic bottle cement. Apply to one surface before joining. Slightly more working time and some gap fill. Testors Liquid Cement and Revell Contacta are common in this category.</div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)"><h3>Thick / Gel</h3><span class="card-chev">▾</span></div>
+      <div class="card-body">For larger gaps or rougher seams. Apply to one surface, let tack slightly, press together. Best for older kits where parts do not fit cleanly.</div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)"><h3>Applicators Matter</h3><span class="card-chev">▾</span></div>
+      <div class="card-body">Many cements include specialized applicators: fine brush caps on Tamiya bottles, needle applicators for precision work, and capillary pipettes. Know which products include which applicators — it is part of the recommendation.</div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)"><h3>How to Use Extra Thin</h3><span class="card-chev">▾</span></div>
+      <div class="card-body">Position parts first. Hold together firmly. Touch applicator tip to the seam joint. The cement wicks in on its own. Hold for 30-60 seconds.</div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard(this)"><h3>How to Use Regular Cement</h3><span class="card-chev">▾</span></div>
+      <div class="card-body">Brush cement onto one surface. Wait about 30 seconds until slightly tacky. Press parts together and hold. Do not move the joint while it is curing.</div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Common Uses and Typical Customers</h3>
+    <p><strong>Common uses</strong></p>
+    <ul>
+      <li>Building plastic model kits — military, armor, aircraft, automotive, sci-fi.</li>
+      <li>Gundam and other injection-molded figure kits.</li>
+      <li>Any injection-molded styrene kit (Warhammer 40K, other wargaming kits)</li>
+    </ul>
+    <p style="margin-top:.5rem"><strong>Typical customers</strong></p>
+    <ul>
+      <li>Scale modelers</li>
+      <li>Gundam builders</li>
+    </ul>
+    <p style="margin-top:.5rem"><strong>Sales note</strong><br>These customers often come in asking for "model glue." Always ask about the material before recommending. A "standard plastic model" is most likely styrene.</p>
+  </div>
+
+  <div class="brand-wrap">
+    <h3>Plastic Cement — Most Common</h3>
+    <div class="brand-grid">
+      <div class="brand-col">
+        <h4>Brands we carry: Tamiya</h4>
+        <ul>
+          <li>Extra Thin (Dark green top) <span style="display:inline-block;background:#fe0202;color:#fff;font-size:.65rem;font-weight:bold;padding:.05rem .4rem;border-radius:3px;vertical-align:middle">#1</span></li>
+          <li>Extra Thin Quick (Lime green top)</li>
+          <li>Cement (Orange top)</li>
+        </ul>
+        <h4>AK Interactive</h4>
+        <ul>
+          <li>Extra Thin (Orange top) <span style="display:inline-block;background:#6278d6;color:#fff;font-size:.65rem;font-weight:bold;padding:.05rem .4rem;border-radius:3px;vertical-align:middle">#5</span></li>
+          <li>Quick Cement (Yellow top)</li>
+          <li>Plastic Cement (White top)</li>
+        </ul>
+        <h4>Revell</h4>
+        <ul>
+          <li>Contacta Professional (Needle bottle) <span style="display:inline-block;background:#404fc2;color:#fff;font-size:.65rem;font-weight:bold;padding:.05rem .4rem;border-radius:3px;vertical-align:middle">#2</span></li>
+          <li>Contacta Tube (Gel tube)</li>
+        </ul>
+      </div>
+      <div class="brand-col">
+        <h4>Deluxe Materials</h4>
+        <ul>
+          <li>Plastic Magic (Blue top) <span style="display:inline-block;background:#404fc2;color:#fff;font-size:.65rem;font-weight:bold;padding:.05rem .4rem;border-radius:3px;vertical-align:middle">#3</span></li>
+          <li>Plastic Magic 10S (White top)</li>
+          <li>Precision Plastic Glue (Needle bottle)</li>
+        </ul>
+        <h4>Testors</h4>
+        <ul>
+          <li>Red Tube — Classic (Gel tube) <span style="display:inline-block;background:#6278d6;color:#fff;font-size:.65rem;font-weight:bold;padding:.05rem .4rem;border-radius:3px;vertical-align:middle">#4</span></li>
+          <li>Blue Tube (Non-toxic gel tube)</li>
+          <li>Liquid Cement (Needle bottle)</li>
+        </ul>
+        <h4>Specialty blends</h4>
+        <ul>
+          <li>Plastruct = Plastic-Weld (Hard plastics ie. ABS)</li>
+          <li>Microscale</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-wrap" data-quiz="3">
+    <div class="quiz-hdr"><h3>Knowledge Check</h3></div>
+    <div class="quiz-body">
+      <p class="quiz-q">A scale modeler asks for the strongest glue you have for their injection-molded plastic military kit. What do you recommend?</p>
+      <div class="quiz-opts">
+        <button class="quiz-opt" data-idx="0"><span class="q-letter">A</span>CA glue — it cures faster and holds harder</button>
+        <button class="quiz-opt" data-idx="1"><span class="q-letter">B</span>Epoxy — stronger than any cement</button>
+        <button class="quiz-opt" data-idx="2"><span class="q-letter">C</span>Plastic cement — it fuses styrene parts into one solid piece</button>
+        <button class="quiz-opt" data-idx="3"><span class="q-letter">D</span>E6000 — bonds to everything</button>
+      </div>
+      <div class="quiz-fb" data-correct="2">Injection-molded military kits are styrene. Plastic cement chemically welds the parts into one piece — that IS the strongest bond for styrene. CA and epoxy sit on top of the surface; cement becomes the surface.</div>
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <button class="btn" onclick="goSection(2)">← Back</button>
+    <button class="btn btn-primary" onclick="goSection(4)">Next: Wood Glues →</button>
+  </div>
+</div>
+
+<!-- ── SCREEN 4: Wood Glues ── -->
+<div class="screen" id="screen-4">
+  <div class="s-eyebrow">Section 5</div>
+  <h1 class="s-title">Wood Modeling Glues</h1>
+  <p class="s-sub">Traditional adhesives for balsa and basswood construction</p>
+
+  <div class="block">
+    <h3>What They Are and How They Work</h3>
+    <p><strong>What they are</strong><br>Adhesives formulated specifically for bonding balsa, basswood, and other lightweight woods used in traditional RC aircraft, model ship, and architectural model construction.</p>
+    <p style="margin-top:.5rem"><strong>Aliphatic Resin (yellow wood glue)</strong><br>Water-based PVA-family adhesive. Soaks into wood fibers and bonds at a fiber level as it dries. The water carrier evaporates and the polymer left behind holds the wood — often stronger than the wood itself. Requires clamping or pinning while curing.</p>
+    <p style="margin-top:.5rem"><strong>Solvent-based wood cement (Testors)</strong><br>Works faster than aliphatic resin. Better for quick tack during assembly. Stronger initial grab but similar final strength for balsa construction.</p>
+  </div>
+
+  <div class="brand-wrap">
+    <h3>Wood Modeling Glues — Most Common</h3>
+    <div class="brand-grid">
+      <div class="brand-col">
+        <h4>Brands we carry: Deluxe Materials</h4>
+        <ul>
+          <li>Super 'Phatic! <span style="display:inline-block;background:#fe0202;color:#fff;font-size:.65rem;font-weight:bold;padding:.05rem .4rem;border-radius:3px;vertical-align:middle">#1</span></li>
+          <li>Aliphatic Resin — Yellow = HD wood glue</li>
+          <li>Model Lite = Wood filler putty</li>
+          <li>Speedbond = PVA <span style="display:inline-block;background:#6278d6;color:#fff;font-size:.65rem;font-weight:bold;padding:.05rem .4rem;border-radius:3px;vertical-align:middle">#5</span></li>
+          <li>Tissue Paste = Part 1 for covering balsa planes</li>
+          <li>EZE-Dope = Part 2 for covering balsa planes <span style="display:inline-block;background:#6278d6;color:#fff;font-size:.65rem;font-weight:bold;padding:.05rem .4rem;border-radius:3px;vertical-align:middle">#4</span></li>
+        </ul>
+        <h4>AK Interactive</h4>
+        <ul><li>Wolverine = PVA</li></ul>
+      </div>
+      <div class="brand-col">
+        <h4>Testors</h4>
+        <ul>
+          <li>Brown Tube = Extra fast solvent</li>
+          <li>Green Tube = Fast solvent</li>
+        </ul>
+        <h4>Woodland Scenics</h4>
+        <ul>
+          <li>Scenic Glue = Thick PVA <span style="display:inline-block;background:#404fc2;color:#fff;font-size:.65rem;font-weight:bold;padding:.05rem .4rem;border-radius:3px;vertical-align:middle">#3</span></li>
+          <li>Scenic Cement = Thin PVA <span style="display:inline-block;background:#404fc2;color:#fff;font-size:.65rem;font-weight:bold;padding:.05rem .4rem;border-radius:3px;vertical-align:middle">#2</span></li>
+          <li>Hob-E-Tac = Extra thick PVA</li>
+          <li>Foam Tack = Perfect for foam structure</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-wrap" data-quiz="4">
+    <div class="quiz-hdr"><h3>Knowledge Check</h3></div>
+    <div class="quiz-body">
+      <p class="quiz-q">A customer is building a traditional balsa-frame RC airplane and needs to glue balsa ribs to a spruce spar. Best product?</p>
+      <div class="quiz-opts">
+        <button class="quiz-opt" data-idx="0"><span class="q-letter">A</span>Thin CA — fast and strong</button>
+        <button class="quiz-opt" data-idx="1"><span class="q-letter">B</span>5-minute epoxy — solid structural bond</button>
+        <button class="quiz-opt" data-idx="2"><span class="q-letter">C</span>Aliphatic resin (Super 'Phatic!) — penetrates wood fibers, often stronger than the wood itself</button>
+        <button class="quiz-opt" data-idx="3"><span class="q-letter">D</span>Plastic cement — bonds wood the same way it bonds styrene</button>
+      </div>
+      <div class="quiz-fb" data-correct="2">Aliphatic resin soaks into wood fibers and creates a bond often stronger than the balsa itself. Plastic cement does nothing on wood. CA is brittle and does not fill gaps well on wood-to-wood joints.</div>
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <button class="btn" onclick="goSection(3)">← Back</button>
+    <button class="btn btn-primary" onclick="goSection(5)">Next: Other Adhesives →</button>
+  </div>
+</div>
+
+<!-- ── SCREEN 5: Other Adhesives ── -->
+<div class="screen" id="screen-5">
+  <div class="s-eyebrow">Section 6</div>
+  <h1 class="s-title">Other Adhesives</h1>
+  <p class="s-sub">Shoe Goo, Thread Loc, Foam-2-Foam, and Woodland Scenics</p>
+
+  <div class="two-col">
+    <div class="block">
+      <h3>Shoe Goo</h3>
+      <p>A thick, flexible contact cement. Apply to both surfaces, let tack a few minutes, then press together. Extremely strong on rubber, vinyl, leather, and canvas. Great for RC body seam bonding and foam bumper attachment. Strong solvent fumes — ventilation required.</p>
+    </div>
+    <div class="block">
+      <h3>BSI Thread Loc — IC-Loc Blue and IC-Loc Red</h3>
+      <p>Thread locker prevents screws and bolts from vibrating loose. IC-Loc Blue (medium strength) is removable with tools — use on RC drivetrain and chassis screws. IC-Loc Red (permanent) is for fasteners you never want to come apart. Not a structural adhesive — it bonds threads, not surfaces. A must-have add-on for every RC car and drone customer.</p>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="block">
+      <h3>Deluxe Materials Foam-2-Foam</h3>
+      <p>A water-based contact adhesive formulated specifically for foam-to-foam bonds. Apply to both surfaces, allow to dry, then press together. Safe on all foam types where CA would melt the material. Essential for foam RC aircraft builders and diorama terrain makers.</p>
+    </div>
+    <div class="block">
+      <h3>Woodland Scenics</h3>
+      <p><strong>Scenic Cement</strong> — thin PVA in a dropper bottle. The standard method for train layout ballast and ground cover. Dilute with water, apply, dries clear and matte.</p>
+      <p style="margin-top:.4rem"><strong>Scenic Glue</strong> — thick PVA for rocks, trees, and larger scenic elements.</p>
+      <p style="margin-top:.4rem"><strong>Hob-E-Tac / Foam Tack</strong> — foam structure adhesives. Hob-E-Tac allows repositioning before the final bond sets.</p>
+    </div>
+  </div>
+
+  <div class="brand-wrap">
+    <h3>Other Adhesives — Brands We Carry</h3>
+    <div class="brand-grid">
+      <div class="brand-col">
+        <h4>Shoe Goo (Eclectic Products)</h4>
+        <ul>
+          <li>Black</li>
+          <li>Clear</li>
+        </ul>
+        <h4>Bob Smith Industries — Thread Loc</h4>
+        <ul>
+          <li>IC-Loc Blue = Medium strength, removable</li>
+          <li>IC-Loc Red = Permanent strength</li>
+        </ul>
+      </div>
+      <div class="brand-col">
+        <h4>Deluxe Materials</h4>
+        <ul>
+          <li>Foam-2-Foam = foam contact adhesive</li>
+          <li>Roket Card Glue = paper and card kit adhesive</li>
+        </ul>
+        <h4>Woodland Scenics</h4>
+        <ul>
+          <li>Scenic Cement = Thin PVA</li>
+          <li>Scenic Glue = Thick PVA</li>
+          <li>Hob-E-Tac = Repositionable foam contact cement</li>
+          <li>Foam Tack = foam structure adhesive</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-wrap" data-quiz="5">
+    <div class="quiz-hdr"><h3>Knowledge Check</h3></div>
+    <div class="quiz-body">
+      <p class="quiz-q">A customer is building an RC car and complains that chassis screws keep backing out during races. What product do you reach for?</p>
+      <div class="quiz-opts">
+        <button class="quiz-opt" data-idx="0"><span class="q-letter">A</span>Thin CA — a drop on the threads locks them fast</button>
+        <button class="quiz-opt" data-idx="1"><span class="q-letter">B</span>Epoxy — permanent and very strong</button>
+        <button class="quiz-opt" data-idx="2"><span class="q-letter">C</span>Thread locker (IC-Loc Blue) — designed exactly for this problem</button>
+        <button class="quiz-opt" data-idx="3"><span class="q-letter">D</span>Shoe Goo — flexible enough to handle vibration</button>
+      </div>
+      <div class="quiz-fb" data-correct="2">Thread locker is purpose-built to prevent fasteners from vibrating loose. IC-Loc Blue locks the screw but still allows removal with a hex driver. CA on threads can make removal very difficult and may crack under vibration.</div>
+    </div>
+  </div>
+
+  <div class="nav-footer">
+    <button class="btn" onclick="goSection(4)">← Back</button>
+    <button class="btn btn-primary" onclick="finishTraining()">Complete Training ✓</button>
+  </div>
+</div>
+
+<!-- ── COMPLETE SCREEN ── -->
+<div class="screen" id="screen-complete">
+  <div class="closing">
+    <h2>The right adhesive starts<br>with the right question.</h2>
+    <blockquote>"What material are you bonding?"</blockquote>
+    <address>Anchorage House of Hobbies &nbsp;|&nbsp; 2803 Spenard Road &nbsp;|&nbsp; 907-277-7778</address>
+  </div>
+  <div class="complete-wrap">
+    <div class="complete-badge">✓</div>
+    <h2>Training Complete</h2>
+    <p>Glues, Adhesives &amp; Cements — AHH Staff Training</p>
+    <div class="score-row">
+      <div class="score-box"><div class="score-n" id="sc-right">0</div><div class="score-l">Correct</div></div>
+      <div class="score-box"><div class="score-n">6</div><div class="score-l">Questions</div></div>
+      <div class="score-box"><div class="score-n" id="sc-pct">0%</div><div class="score-l">Score</div></div>
+    </div>
+    <button class="btn btn-primary" onclick="restartTraining()">Restart Training</button>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+const SECTIONS = [
+  "Glue, Adhesive, or Cement?",
+  "Cyanoacrylate (CA)",
+  "Epoxy",
+  "Plastic Cement",
+  "Wood Modeling Glues",
+  "Other Adhesives"
+];
+
+let current = 0;
+let done = new Set();
+let quizResults = {};
+
+function buildNav() {
+  const el = document.getElementById('nav-items');
+  el.innerHTML = SECTIONS.map((s, i) =>
+    `<button class="nav-btn ${i===0?'active':''}" id="nav-${i}" onclick="goSection(${i})">
+      <span class="nav-dot"></span>${s}<span class="nav-check">✓</span>
+    </button>`
+  ).join('');
+}
+
+function goSection(idx) {
+  done.add(current);
+  current = idx;
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+idx).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach((b,i) => {
+    b.classList.remove('active');
+    if (done.has(i) && i !== idx) b.classList.add('done');
+  });
+  const nb = document.getElementById('nav-'+idx);
+  if (nb) { nb.classList.add('active'); nb.scrollIntoView({block:'nearest'}); }
+  const pct = Math.round((idx+1)/SECTIONS.length*100);
+  document.getElementById('prog-fill').style.width = pct+'%';
+  document.getElementById('prog-lbl').textContent = 'Section '+(idx+1)+' of '+SECTIONS.length;
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function finishTraining() {
+  done.add(current);
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-complete').classList.add('active');
+  document.getElementById('prog-fill').style.width = '100%';
+  document.getElementById('prog-lbl').textContent = 'Complete!';
+  document.querySelectorAll('.nav-btn').forEach(b => { b.classList.remove('active'); b.classList.add('done'); });
+  const correct = Object.values(quizResults).filter(Boolean).length;
+  document.getElementById('sc-right').textContent = correct;
+  document.getElementById('sc-pct').textContent = Math.round(correct/6*100)+'%';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function restartTraining() {
+  done.clear(); quizResults = {}; current = 0;
+  document.querySelectorAll('.quiz-opt').forEach(b => { b.classList.remove('correct','wrong'); b.disabled = false; });
+  document.querySelectorAll('.quiz-fb').forEach(f => { f.classList.remove('show','correct','wrong'); f.textContent = f.dataset.orig || f.textContent; });
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('done','active'));
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-0').classList.add('active');
+  document.getElementById('nav-0').classList.add('active');
+  document.getElementById('prog-fill').style.width = '16.6%';
+  document.getElementById('prog-lbl').textContent = 'Section 1 of 6';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// Store original feedback text before it gets prepended
+document.querySelectorAll('.quiz-fb').forEach(f => f.dataset.orig = f.textContent);
+
+document.addEventListener('click', function(e) {
+  const opt = e.target.closest('.quiz-opt');
+  if (!opt || opt.disabled) return;
+  const wrap = opt.closest('.quiz-wrap');
+  const qIdx = parseInt(wrap.dataset.quiz);
+  const chosen = parseInt(opt.dataset.idx);
+  const fb = wrap.querySelector('.quiz-fb');
+  const correct = parseInt(fb.dataset.correct);
+  wrap.querySelectorAll('.quiz-opt').forEach(b => b.disabled = true);
+  wrap.querySelectorAll('.quiz-opt')[correct].classList.add('correct');
+  if (chosen !== correct) opt.classList.add('wrong');
+  const ok = chosen === correct;
+  quizResults[qIdx] = ok;
+  fb.classList.add('show', ok ? 'correct' : 'wrong');
+  fb.textContent = (ok ? '✓ Correct. ' : '✗ Not quite. ') + fb.dataset.orig;
+});
+
+function toggleCard(hdr) { hdr.parentElement.classList.toggle('open'); }
+
+function toggleVisc(cell) {
+  const was = cell.classList.contains('open');
+  document.querySelectorAll('.visc-cell').forEach(c => c.classList.remove('open'));
+  if (!was) cell.classList.add('open');
+}
+
+buildNav();
+</script>
+</body>
+</html>
